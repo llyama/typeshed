@@ -1,6 +1,6 @@
 from _typeshed import Incomplete
 from functools import cached_property
-from typing import ClassVar
+from typing import Any, ClassVar, Hashable
 from typing_extensions import TypeAlias
 
 from networkx.classes.coreviews import MultiAdjacencyView
@@ -8,6 +8,7 @@ from networkx.classes.graph import Graph, _MapFactory, _Node
 from networkx.classes.multidigraph import MultiDiGraph
 from networkx.classes.reportviews import OutMultiEdgeView
 
+_Key = Hashable
 _MultiEdge: TypeAlias = tuple[_Node, _Node, int]  # noqa: Y047
 
 __all__ = ["MultiGraph"]
@@ -18,8 +19,8 @@ class MultiGraph(Graph[_Node]):
     @cached_property
     def adj(self) -> MultiAdjacencyView[_Node, _Node, dict[str, Incomplete]]: ...
     def new_edge_key(self, u: _Node, v: _Node) -> int: ...
-    def add_edge(self, u_for_edge, v_for_edge, key=None, **attr): ...  # type: ignore[override]  # Has an additional `key` keyword argument
-    def remove_edge(self, u, v, key=None): ...
+    def add_edge(self, u_for_edge: _Node, v_for_edge: _Node, key: _Key | None = None, **attr: Any) -> _Key: ...  # type: ignore[override]  # Has an additional `key` keyword argument
+    def remove_edge(self, u: _Node, v: _Node, key: _Key | None = None) -> None: ...
     def has_edge(self, u: _Node, v: _Node, key=None) -> bool: ...
     def get_edge_data(  # type: ignore[override]  # Has an additional `key` keyword argument
         self, u, v, key=None, default=None
