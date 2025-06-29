@@ -1,6 +1,7 @@
 from _typeshed import Incomplete
+from collections.abc import Hashable
 from functools import cached_property
-from typing import Any, ClassVar, Hashable
+from typing import Any, ClassVar
 from typing_extensions import TypeAlias
 
 from networkx.classes.coreviews import MultiAdjacencyView
