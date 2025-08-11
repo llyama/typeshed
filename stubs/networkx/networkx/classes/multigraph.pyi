@@ -1,14 +1,15 @@
-from collections.abc import Hashable
+from collections.abc import Hashable, Iterable
 from functools import cached_property
 from typing import Any, ClassVar, overload
 from typing_extensions import TypeAlias, TypeVar
 
 from networkx.classes.coreviews import MultiAdjacencyView
-from networkx.classes.graph import Graph, _MapFactory, _Node
+from networkx.classes.graph import Graph, _EdgePlus, _MapFactory, _Node
 from networkx.classes.multidigraph import MultiDiGraph
 from networkx.classes.reportviews import MultiEdgeView
 
-_MultiEdge: TypeAlias = tuple[_Node, _Node, int]  # noqa: Y047
+_EdgeWithKey: TypeAlias = tuple[_Node, _Node, Hashable]
+_EdgeWithKeyAndData: TypeAlias = tuple[_Node, _Node, Hashable, dict[str, Any]]
 
 _DefaultT = TypeVar("_DefaultT")
 _KeyT = TypeVar("_KeyT", bound=Hashable)
@@ -25,6 +26,12 @@ class MultiGraph(Graph[_Node]):
     def add_edge(self, u_for_edge: _Node, v_for_edge: _Node, key: int | None = None, **attr: Any) -> int: ...
     @overload
     def add_edge(self, u_for_edge: _Node, v_for_edge: _Node, key: _KeyT, **attr: Any) -> _KeyT: ...
+    @overload
+    def add_edges_from(self, ebunch_to_add: Iterable[_EdgeWithKey[_Node]], **attr: Any) -> list[Hashable]: ...
+    @overload
+    def add_edges_from(self, ebunch_to_add: Iterable[_EdgeWithKeyAndData[_Node]], **attr: Any) -> list[Hashable]: ...
+    @overload
+    def add_edges_from(self, ebunch_to_add: Iterable[_EdgePlus[_Node]], **attr: Any) -> list[int]: ...
     # key : hashable identifier, optional (default=lowest unused integer)
     def remove_edge(self, u: _Node, v: _Node, key: Hashable | None = None) -> None: ...
     def has_edge(self, u: _Node, v: _Node, key: Hashable | None = None) -> bool: ...
