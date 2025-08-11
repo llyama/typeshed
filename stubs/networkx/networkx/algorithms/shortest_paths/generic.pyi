@@ -1,5 +1,5 @@
 from collections.abc import Generator
-from typing import overload
+from typing import Any, overload
 
 from networkx.algorithms.shortest_paths.weighted import _WeightFunc
 from networkx.classes.graph import Graph, _Node
@@ -72,16 +72,27 @@ def shortest_path(  # source and target are not specified => generator of (t, {s
     backend: str | None = None,
     **backend_kwargs,
 ) -> Generator[tuple[_Node, dict[str, list[_Node]]]]: ...
-@overload  # both source and target are specified => len(s -> t)
+@overload  # both source and target are specified => len(s -> t). No weight.
 def shortest_path_length(
     G: Graph[_Node],
     source: _Node,
     target: _Node,
-    weight: str | _WeightFunc[_Node] | None = None,
+    weight: None = None,
     method: str | None = "dijkstra",
     *,
     backend: str | None = None,
-    **backend_kwargs,
+    **backend_kwargs: Any,
+) -> int: ...
+@overload  # both source and target are specified => len(s -> t). With weight.
+def shortest_path_length(
+    G: Graph[_Node],
+    source: _Node,
+    target: _Node,
+    weight: str | _WeightFunc[_Node] = ...,
+    method: str | None = "dijkstra",
+    *,
+    backend: str | None = None,
+    **backend_kwargs: Any,
 ) -> float: ...
 @overload  # only source is specified => {t1: len(s -> t1), t2: len(s -> t2), ...}
 def shortest_path_length(
@@ -92,7 +103,7 @@ def shortest_path_length(
     method: str | None = "dijkstra",
     *,
     backend: str | None = None,
-    **backend_kwargs,
+    **backend_kwargs: Any,
 ) -> dict[_Node, float]: ...
 @overload  # only target is specified (positional) => {s1: len(s1 -> t), s2: len(s2 -> t), ...}
 def shortest_path_length(
@@ -103,7 +114,7 @@ def shortest_path_length(
     method: str | None = "dijkstra",
     *,
     backend: str | None = None,
-    **backend_kwargs,
+    **backend_kwargs: Any,
 ) -> dict[_Node, float]: ...
 @overload  # only target is specified (keyword) => {s1: len(s1 -> t), s2: len(s2 -> t), ...}
 def shortest_path_length(
@@ -114,7 +125,7 @@ def shortest_path_length(
     weight: str | _WeightFunc[_Node] | None = None,
     method: str | None = "dijkstra",
     backend: str | None = None,
-    **backend_kwargs,
+    **backend_kwargs: Any,
 ) -> dict[_Node, float]: ...
 @overload
 def shortest_path_length(  # source and target are not specified => generator of (t, {s1: len(s1 -> t), s2: len(s2 -> t), ...})
@@ -125,7 +136,7 @@ def shortest_path_length(  # source and target are not specified => generator of
     method: str | None = "dijkstra",
     *,
     backend: str | None = None,
-    **backend_kwargs,
+    **backend_kwargs: Any,
 ) -> Generator[tuple[_Node, dict[_Node, float]]]: ...
 @_dispatchable
 def average_shortest_path_length(
